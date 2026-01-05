@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -28,9 +29,10 @@ public class FileScanner {
 
     private Attendance parseToAttendance(String line) {
         String[] parts = line.split(DELIMITER);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return new Attendance(
                 parts[0],
-                LocalDateTime.parse(parts[1])
+                LocalDateTime.parse(parts[1], formatter)
         );
     }
 
