@@ -10,6 +10,19 @@ public class Attendances {
         this.attendanceList = attendanceList;
     }
 
+    public void add(Attendance attendance) {
+        attendanceList.add(attendance);
+    }
+
+    public boolean hasNickName(String nickName) {
+        Attendance hasNickName = attendanceList.stream()
+                .filter(attendance -> attendance.getNickname().equals(nickName))
+                .findFirst()
+                .orElse(null);
+
+        return hasNickName != null;
+    }
+
     public Attendance findByNickName(String nickName) {
         return attendanceList.stream()
                 .filter(attendance -> attendance.getNickname().equals(nickName))
