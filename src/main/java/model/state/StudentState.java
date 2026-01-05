@@ -1,6 +1,6 @@
 package model.state;
 
-public enum AttendanceState {
+public enum StudentState {
     NORMAL(""),
     WARNING("경고"),
     MEETING("면담"),
@@ -8,7 +8,7 @@ public enum AttendanceState {
 
     private final String state;
 
-    AttendanceState(String state) {
+    StudentState(String state) {
         this.state = state;
     }
 
