@@ -10,7 +10,7 @@ public enum ErrorMessage {
     INVALID_FILE_READ("파일을 읽을 수 없습니다.");
 
     private final String message;
-    private static final String PREFIX = "ERROR ";
+    private static final String PREFIX = "[ERROR] ";
 
     ErrorMessage(String message) {
         this.message = message;

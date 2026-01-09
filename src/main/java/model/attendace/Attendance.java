@@ -10,40 +10,37 @@ import util.ErrorMessage;
 
 public class Attendance {
     private final String nickname;
+    private LocalDateTime localDateTime;
     private LocalDate localDate;
     private LocalTime localTime;
     private AttendanceState state;
 
     public Attendance(String nickname, LocalDateTime dateTime) {
         this.nickname = nickname;
+        this.localDateTime = dateTime;
         this.localDate = dateTime.toLocalDate();
         this.localTime = dateTime.toLocalTime();
         this.state = decideState(this.localDate, this.localTime);
     }
 
     private AttendanceState decideState(LocalDate date, LocalTime time) {
-        validateHoliday(date);
+        DecemberCalendar.validateIsWorkDay(date);
         String dayDescription = DecemberCalendar.findDescription(date);
         return OperatingTime.decideAttendanceState(dayDescription, time);
     }
 
-    private void validateHoliday(LocalDate date) {
-        if (isHoliday(date)) {
-            String month = String.valueOf(date.getMonthValue());
-            String day = String.valueOf(date.getDayOfMonth());
-            String dayDescription = DecemberCalendar.findDescription(date);
-            String formatter = ErrorMessage.IS_HOLIDAY.getMessage();
-            String message = String.format(formatter, month, day, dayDescription);
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    public static boolean isHoliday(LocalDate localDate) {
-        return DecemberCalendar.isWeekendOrHoliday(localDate);
+    public void updateTime(LocalTime newTime) {
+        this.localTime = newTime;
+        this.localDateTime = LocalDateTime.of(this.localDate, newTime);
+        this.state = decideState(this.localDate, newTime);
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    public LocalDateTime localDateTime() {
+        return localDateTime;
     }
 
     public LocalDate getLocalDate() {

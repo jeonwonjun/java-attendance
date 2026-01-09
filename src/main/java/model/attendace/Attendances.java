@@ -1,6 +1,8 @@
 package model.attendace;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import util.ErrorMessage;
 
 public class Attendances {
@@ -11,22 +13,27 @@ public class Attendances {
     }
 
     public void add(Attendance attendance) {
+        if (findByNickNameAndDate(attendance.getNickname(), attendance.getLocalDate()).isPresent()) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_IS_ATTENDANCE.getMessage());
+        }
         attendanceList.add(attendance);
     }
 
-    public boolean hasNickName(String nickName) {
-        Attendance hasNickName = attendanceList.stream()
-                .filter(attendance -> attendance.getNickname().equals(nickName))
-                .findFirst()
-                .orElse(null);
-
-        return hasNickName != null;
+    public boolean hasNickname(String nickname) {
+        return attendanceList.stream().anyMatch(a -> a.getNickname().equals(nickname));
     }
 
-    public Attendance findByNickName(String nickName) {
+    // 특정 크루의 특정 날짜 기록 조회
+    public Optional<Attendance> findByNickNameAndDate(String nickName, LocalDate date) {
+        return attendanceList.stream()
+                .filter(attendance -> attendance.getNickname().equals(nickName) && attendance.getLocalDate().equals(date))
+                .findFirst();
+    }
+
+    // 특정 크루의 모든 출석 기록 조회(3번 기능)
+    public List<Attendance> findAllByNickName(String nickName) {
         return attendanceList.stream()
                 .filter(attendance -> attendance.getNickname().equals(nickName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_NICKNAME_EXIST.getMessage()));
+                .toList();
     }
 }

@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
+import util.ErrorMessage;
 
 public enum DecemberCalendar {
     DEC_1(LocalDate.of(2024, 12, 1), "일요일"),
@@ -47,6 +48,22 @@ public enum DecemberCalendar {
                 .findFirst()
                 .orElseGet(() -> checkDate.getDayOfWeek()
                         .getDisplayName(TextStyle.FULL, Locale.KOREAN));
+    }
+
+    public static void validateIsWorkDay(LocalDate date) {
+        if (isWeekendOrHoliday(date)) {
+            String month = String.valueOf(date.getMonthValue());
+            String day = String.valueOf(date.getDayOfMonth());
+            String description = findDescription(date);
+            String errorMessage = String.format(ErrorMessage.IS_HOLIDAY.getMessage(), month, day, description);
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    public static void validateNotFuture(LocalDate date, LocalDate now) {
+        if (date.isAfter(now)) {
+            throw new IllegalArgumentException(ErrorMessage.FUTURE_DAY.getMessage());
+        }
     }
 
     public LocalDate getDate() {

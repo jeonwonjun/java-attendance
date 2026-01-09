@@ -16,4 +16,18 @@ public class Students {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_NICKNAME_EXIST.getMessage()));
     }
+
+    public List<Student> findExpulsionRiskStudents() {
+        return studentList.stream()
+                .filter(student -> student.getTotalAbsenceCount() >= 2)
+                .sorted((s1, s2) -> {
+                    int compareAbsence = Integer.compare(s2.getTotalAbsenceCount(), s1.getTotalAbsenceCount());
+                    if (compareAbsence != 0) {
+                        return compareAbsence;
+                    }
+
+                    return s1.getNickName().compareTo(s2.getNickName());
+                })
+                .toList();
+    }
 }

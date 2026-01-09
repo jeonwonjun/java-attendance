@@ -16,7 +16,7 @@ public class FileScanner {
     private static final String ATTENDANCES_PATH = "src/main/resources/attendances.csv";
     private static final String DELIMITER = ",";
 
-    private FileScanner() {
+    public FileScanner() {
     }
 
     public List<Attendance> loadAttendances() {
@@ -37,12 +37,19 @@ public class FileScanner {
     }
 
     public List<String> readFile(String filePath) {
-        try {
-            Scanner scanner = new Scanner(new File(filePath));
-            List<String> fileBody = new ArrayList<>();
-            scanner.next();
-            while (scanner.hasNext()) {
-                fileBody.add(scanner.next());
+        List<String> fileBody = new ArrayList<>();
+        try (Scanner scanner = new Scanner(new File(filePath))) {
+            // 1. 첫 번째 줄(헤더: nickname,datetime) 무시
+            if (scanner.hasNextLine()) {
+                scanner.nextLine();
+            }
+
+            // 2. 줄 단위로 끝까지 읽기 (공백에 잘리지 않도록 nextLine() 사용)
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.isEmpty()) {
+                    fileBody.add(line);
+                }
             }
             return fileBody;
         } catch (IOException e) {
